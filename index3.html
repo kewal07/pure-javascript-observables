@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+    <head>
+        <script>
+			function Observable(value){
+				this.listeners = [];
+				this.n = value;
+			}
+			Observable.prototype = {
+				notify: function(newValue){
+					this.listeners.forEach(function(listener){
+						listener(newValue);
+					});
+				},
+				prop: function(newValue){
+					if (arguments.length && newValue !== this.n){
+						this.n = newValue;
+						this.notify(newValue);
+					}
+					return this.n;
+				},
+				subscribe: function(fn){
+					this.listeners.push(fn);
+				},
+				unsubscribe: function(fn){
+					this.listeners = this.listeners.filter(
+		            function(item) {
+		                if (item !== fn) {
+		                    return item;
+		                }
+		            }
+		        );}
+			}
+			var testFunction = function(newN){
+				console.log(newN);
+			};
+			var n = new Observable(5);
+			n.subscribe(testFunction);
+			console.log(n.prop());
+			n.prop(15);
+			n.prop(15);
+			n.prop(20);
+			n.unsubscribe(testFunction);
+			n.prop(25);
+			console.log(n.prop());
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>
